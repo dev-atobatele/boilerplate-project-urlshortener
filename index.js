@@ -18,19 +18,18 @@ app.get('/', function(req, res) {
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
 // Your first API endpoint
+let counter = 0;
 app.post('/api/shorturl', function(req, res) {
-  let {url} = req.body;
+  let url = new URL(req.body.url);
+  console.log(url.href)
   let resObj = {
-    original_url: url,
-    short_url:'short'
+    original_url: url.href,
+    short_url:counter
   };
-  dns.lookup(url,function (err) {
-    if (err.code=='ENOTFOUND') {
-      resObj = {error:'invalid url'}
-    }
-  })
-
+  if(url.protocol != 'https:'){resObj = {error:'invalid url'}}
+  console.log(resObj)
   res.json(resObj);
+  counter += 1;
 });
 /*app.get('api/shorturl',function (req,res) {
   
